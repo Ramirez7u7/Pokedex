@@ -3,28 +3,49 @@ from app.schemas.pokemon_favorite_schema import PokemonFavoriteSchema
 from marshmallow import ValidationError
 from app.models.factory import ModelFactory
 from bson import ObjectId
+from app.tools.response_manager import ResponseManager
 
-bp = Blueprint("Favorite Pokemons",__name__, url_prefix="/FavoritePokemons")
-user_Schema = user_Schema()
-user_model = ModelFactory.get_model("pokemons_favorites")
 
-@bp.route("/dalete/<string:pokemon_id>", methods={"DALATE"})
-def dalete(pokemons_id):
-    pokemons_favorites.delete(ObjectId(poekemons_id))
-    return jsonify("Pokemon Eliminado de la Lista")
 
-@bp.route("/get/<string:pokemon_id>", methods={"CREATE"})
-def create_pokemon(pokemon_id):
-    pokemon = pokemon_favorite.find_by_id(ObjectId(ObjectId))
-    return jsonify(pokemon,200)
 
-@bp.route("/get/<string:pokemon_id>", methods={"GET"})
-def get_pokemon(pokemon_id):
-    pokemon = pokemon_Model.find_by_id(ObjectId(ObjectId))
-    return jsonify(user,200)
+bp = Blueprint("Favorite_Pokemons",__name__, url_prefix="/Favorite-Pokemons")
+RM = ResponseManager()
+PokemonFavoriteSchema_Schema = user_Schema()
+PokemonFavorites_model = ModelFactory.get_model("pokemons_favorites")
 
-@bp.route("/get/<string:pokemons_all>", methods={"GET"})
-def get_pokemons(pokemon_id):
-    pokemons = pokemon_Model.find_by_all(ObjectId(ObjectId))
-    return jsonify(user,200)
-    
+
+
+@bp.route("/", methods=["POST"])
+def create():
+    try:
+        data = request.json
+        data = PokemonFavoriteSchema_Schema.Validate(data)
+        PokemonFavorites_model = PokemonFavorites_model.create(data)
+        return RM.succes({"_id":PokemonFavorites_model})
+    except ValidationError as err:
+        print(err)
+        return RM.error("Es necesario datos")
+
+@bp.route("/", methods["DELETE"])
+def delete(id):
+    PokemonFavorites_model.delete(ObjectId(id))
+    return RM.succes("pokemon eliminado, uno menos")
+
+@bp.route("/", methods=["GET"])
+def get_all(user_id):
+    data = PokemonFavorites_model.find_all()
+    return RM.succes(data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+

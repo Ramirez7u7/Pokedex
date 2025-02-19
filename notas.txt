@@ -1,0 +1,15 @@
+1. los contraladores se encargan de conectar al usuario a la base de datos , van al schema a validad para despues informaicon a la base de datos
+
+
+
+2. la clase padre tiene 5 metodos (get_one, get_all, delete, create, validate) apartir de el creamos 3 clases (uses,pokemon,pokemons_favorite)
+cada clase tiene ciertos permisos para tener ciertas caracteristicas por ejemplo pokemons_favorite solamente tiene create, delete, get_All el resto se ignora
+
+
+3. en factory devuelve los schema pedidos por el usuario pero ya instansiados
+
+
+4. __init__ es un contructor a la espera de una collection segun lo que se pida 
+
+
+5. maldito blueprint  crea por asi decirlor modulos para accerder de manera rapida desde el nombre de la url
