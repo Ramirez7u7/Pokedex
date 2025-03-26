@@ -12,7 +12,7 @@ bp = Blueprint("pokemon",__name__,url_prefix="/pokemons")
 RM = ResponseManager()
 pokemon_model = ModelFactory.get_model("pokemons")
 
-@bp.route("/get/<string:pokemons_id>",methods =["GET"])
+@bp.route("/get/<string:pokemon_id>",methods =["GET"])
 @jwt_required()
 def get_pokemon(pokemon_id):
     pokemon = pokemon_model.find_by_id(ObjectId(pokemon_id))

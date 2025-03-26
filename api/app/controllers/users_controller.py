@@ -17,19 +17,25 @@ EM = EncryptionManager()
 
 
 
-@bp.route("/login",methods=["POST"])
+@bp.route("/login", methods=["POST"])
 def login():
     data = request.json
-    email = data.get("email",None)
+    email = data.get("email", None)
     password = data.get("password", None)
     if not email or not password:
-        return RM.error("Falta Contraseña/Correo")
-    user = user_model.get_by_email_password(email,password)
+        return RM.error("Es necesario enviar todas las credenciales")
+    
+    user = user_model.get_by_email_password(email)
     if not user:
-        return RM.error("No existe el usuario")
+        return RM.error("No se encontró el usuario")
+    
     if not EM.compare_hashes(password, user["password"]):
-        return RM.error("Credenciales No Validas May")
-    return RM.success({"user":user,"token":create_access_token(user["_id"])})
+        return RM.error("Credenciales inválidas")
+    
+    return RM.success({
+        "user_id": user["_id"],
+        "token": create_access_token(user["_id"])
+    })
 
 
 @bp.route("/register", methods=["POST"])
@@ -48,7 +54,7 @@ def update():
     user_id = get_jwt_identity()
     try:
         data = user_Schema.load(request.json)
-        user["password"] = EM.create_hash(data["password"])
+        data["password"] = EM.create_hash(data["password"])
         user = user_model.update(ObjectId(user_id), data)
         return RM.success({"data":user})
     except ValidationError as err:
@@ -65,7 +71,7 @@ def dalete():
 @jwt_required()
 def get_user():
     user_id = get_jwt_identity()
-    user = user_model.find_by_id(ObjectId(ObjectId))
+    user = user_model.find_by_id(ObjectId(user_id))
     if not user:
         return RM.error("El usuario no existe")
     return RM.success(user)

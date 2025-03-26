@@ -9,7 +9,7 @@ class SuperClass:
         data = list(self.collection.find())
         for datum in data:
             datum["_id"] = str(datum["_id"])
-        return list(data)
+        return data
 
     def find_by_id(self,object_id):
         datum = self.collection.find_one({
